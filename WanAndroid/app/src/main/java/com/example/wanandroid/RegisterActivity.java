@@ -31,9 +31,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-     String  TAG ="1111a" ;
+    String TAG = "1111a";
 
     private EditText registerUsernameEdit;
     private EditText registerPasswordEdit;
@@ -45,32 +45,24 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         initView();
+        initListener();
 
-        Toolbar toolbar=(Toolbar) findViewById(R.id.register_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.register_toolbar);
         setSupportActionBar(toolbar);
-        ActionBar actionBar=getSupportActionBar();
-        if (actionBar!=null){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.return1);
+            actionBar.setHomeAsUpIndicator(R.drawable.returngo);
         }
 
+    }
 
-        registerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String registerUsername  =  registerUsernameEdit.getText().toString();
-                String registerPassword  =  registerPasswordEdit.getText().toString();
-                String registerConfirmPassword = registerConfirmPasswordEdit.getText().toString();
-                registerWithOkHttp(registerUsername,registerPassword,registerConfirmPassword);
-             }
-        });
+    private void initListener() {
+        registerBtn.setOnClickListener(this);
     }
 
 
-
-
-
-    public void registerWithOkHttp(String username,String password,String repassword){
+    public void registerWithOkHttp(String username, String password, String repassword) {
         HttpUtil.registerWithOkHttp(username, password, repassword, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -85,9 +77,9 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 //将返回值转成字符串
-                final String responseDate =  response.body().string();
+                final String responseDate = response.body().string();
                 //用Gson将他解析到一个类中
-                Gson gson  =  new Gson();
+                Gson gson = new Gson();
                 RegisterErroBean registerErroBean = gson.fromJson(responseDate, RegisterErroBean.class);
                 //将错误返回的代码值转换为Int类型比较
                 Integer w = new Integer(registerErroBean.getErrorCode());
@@ -95,9 +87,9 @@ public class RegisterActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (i == -1){
+                        if (i == -1) {
                             Toast.makeText(RegisterActivity.this, registerErroBean.getErrorMsg(), Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
 
                             Toast.makeText(RegisterActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                             finish();
@@ -112,14 +104,26 @@ public class RegisterActivity extends AppCompatActivity {
     private void initView() {
         registerUsernameEdit = findViewById(R.id.register_username);
         registerPasswordEdit = findViewById(R.id.register_password);
-        registerConfirmPasswordEdit  =  findViewById(R.id.register_confirmpassword);
-        registerBtn =findViewById(R.id.register_button);
+        registerConfirmPasswordEdit = findViewById(R.id.register_confirmpassword);
+        registerBtn = findViewById(R.id.register_button);
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.register_button:
+                String registerUsername = registerUsernameEdit.getText().toString();
+                String registerPassword = registerPasswordEdit.getText().toString();
+                String registerConfirmPassword = registerConfirmPasswordEdit.getText().toString();
+                registerWithOkHttp(registerUsername, registerPassword, registerConfirmPassword);
+                break;
+        }
+    }
+
     //Toolbar
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.toolbar_register,menu);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_register, menu);
         return true;
     }
 
@@ -131,5 +135,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return true;
     }
+
 
 }

@@ -33,6 +33,7 @@ public class HomePage extends AppCompatActivity {
         initData();
         mStateVPAdapter =  new MyFragmentStateVPAdapter(getSupportFragmentManager(),mFragmentList);
         mViewPager.setAdapter(mStateVPAdapter);
+        //Viewpager滑动时响应
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

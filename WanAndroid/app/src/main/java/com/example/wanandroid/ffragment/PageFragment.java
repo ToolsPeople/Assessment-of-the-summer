@@ -23,6 +23,12 @@ import com.example.wanandroid.R;
 import com.example.wanandroid.bean.BannerBean;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.scwang.smartrefresh.header.DeliveryHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
+import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -45,7 +51,7 @@ public class PageFragment extends Fragment implements OnBannerListener{
     private  Banner banner;
     private BannerBean bannerBean;
     private TextView textView;
-
+    private RefreshLayout mRefreshLayout;
 
     @Nullable
     @Override
@@ -54,6 +60,24 @@ public class PageFragment extends Fragment implements OnBannerListener{
 
         banner = view.findViewById(R.id.banner);
         textView = view.findViewById(R.id.banner_tv);
+        mRefreshLayout = view.findViewById(R.id.refreshLayout);
+
+        mRefreshLayout.setRefreshHeader(new DeliveryHeader(view.getContext()));
+        mRefreshLayout.setRefreshFooter(new BallPulseFooter(view.getContext()).setSpinnerStyle(SpinnerStyle.Translate));
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh(1500);
+            }
+        });
+
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMore(1500);
+            }
+        });
+
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url("https://www.wanandroid.com/banner/json").build();
 
